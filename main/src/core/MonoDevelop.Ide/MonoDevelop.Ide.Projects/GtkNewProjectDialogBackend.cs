@@ -583,9 +583,14 @@ namespace MonoDevelop.Ide.Projects
 
 		void TreeViewRowActivated (object o, RowActivatedArgs args)
 		{
-			if (CanMoveToNextPage && IsSolutionTemplateOnActivatedRow ((Gtk.TreeView)o, args)) {
-				MoveToNextPage ();
+			var template = GetSelectedTemplate ();
+			if ((template == null) || (template.AvailableLanguages.Count <= 1)) {
+				if (CanMoveToNextPage && IsSolutionTemplateOnActivatedRow ((Gtk.TreeView)o, args)) {
+					MoveToNextPage ();
+				}
+				return;
 			}
+			HandlePopup (template, 0);
 		}
 
 		bool IsSolutionTemplateOnActivatedRow (TreeView treeView, RowActivatedArgs args)
