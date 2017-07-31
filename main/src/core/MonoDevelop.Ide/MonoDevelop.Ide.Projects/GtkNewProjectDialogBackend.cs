@@ -1,4 +1,4 @@
-﻿//
+﻿﻿//
 // GtkNewProjectDialogBackend.cs
 //
 // Author:
@@ -584,13 +584,14 @@ namespace MonoDevelop.Ide.Projects
 		void TreeViewRowActivated (object o, RowActivatedArgs args)
 		{
 			var template = GetSelectedTemplate ();
-			if ((template == null) || (template.AvailableLanguages.Count <= 1)) {
-				if (CanMoveToNextPage && IsSolutionTemplateOnActivatedRow ((Gtk.TreeView)o, args)) {
-					MoveToNextPage ();
-				}
+
+			if (template == null)
 				return;
-			}
-			HandlePopup (template, 0);
+
+			if ((template.AvailableLanguages.Count <= 1) && CanMoveToNextPage) 
+				MoveToNextPage ();
+			 else 
+				HandlePopup (template, 0);
 		}
 
 		bool IsSolutionTemplateOnActivatedRow (TreeView treeView, RowActivatedArgs args)
