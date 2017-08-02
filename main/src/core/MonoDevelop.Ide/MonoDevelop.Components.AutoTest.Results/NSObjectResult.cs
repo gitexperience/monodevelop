@@ -40,10 +40,17 @@ namespace MonoDevelop.Components.AutoTest.Results
 	public class NSObjectResult : AppResult
 	{
 		NSObject ResultObject;
+		int index;
 
 		internal NSObjectResult (NSObject resultObject)
 		{
 			ResultObject = resultObject;
+		}
+
+		internal NSObjectResult (NSObject resultObject, int index)
+		{
+			ResultObject = resultObject;
+			this.index = index;
 		}
 
 		public override string ToString ()
@@ -126,6 +133,14 @@ namespace MonoDevelop.Components.AutoTest.Results
 				}
 			}
 
+			if(ResultObject is NSSegmentedControl){
+				NSSegmentedControl control = (NSSegmentedControl)ResultObject;
+				string value = control.GetLabel (this.index);
+				if (CheckForText (value, text, exact)) {
+					return this;
+				}
+			}
+
 			return null;
 		}
 
@@ -154,6 +169,19 @@ namespace MonoDevelop.Components.AutoTest.Results
 			return MatchProperty (propertyName, ResultObject, value);
 		}
 
+		public override List<AppResult> Children (bool recursive = true)
+		{
+			var children = new List<AppResult> ();
+			children.AddRange (base.Children (recursive));
+			if(ResultObject is NSSegmentedControl)
+			{
+				var segmentedControl = (NSSegmentedControl)ResultObject;
+				for (int i = 0; i < segmentedControl.SegmentCount; i++)
+					children.Add (new NSObjectResult(ResultObject, i) { ParentNode = this });
+			}
+			return base.Children (recursive);
+		}
+
 		public override List<AppResult> NextSiblings ()
 		{
 			return null;
@@ -171,6 +199,10 @@ namespace MonoDevelop.Components.AutoTest.Results
 
 		public override bool Click ()
 		{
+			if (ResultObject is NSSegmentedControl) {
+				var segmentedControl = (NSSegmentedControl)ResultObject;
+				segmentedControl.SelectSegment (this.index);
+			}
 			NSControl control = ResultObject as NSControl;
 			if (control == null) {
 				return false;
