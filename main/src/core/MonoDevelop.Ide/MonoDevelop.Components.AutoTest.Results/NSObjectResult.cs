@@ -170,34 +170,6 @@ namespace MonoDevelop.Components.AutoTest.Results
 			return MatchProperty (propertyName, ResultObject, value);
 		}
 
-		public override List<AppResult> Children (bool recursive = true)
-		{
-			AppResult firstChild = null, lastChild = null;
-			var children = new List<AppResult> ();
-			children.AddRange (base.Children (recursive));
-			firstChild = children.FirstOrDefault ();
-			lastChild = children.LastOrDefault ();
-
-			if(ResultObject is NSSegmentedControl || ResultObject.GetType ().IsSubclassOf (typeof(NSSegmentedControl)))
-			{
-				var segmentedControl = (NSSegmentedControl)ResultObject;
-				LoggingService.LogInfo ($"Found NSSegmentedControl with {segmentedControl.SegmentCount} children");
-				for (int i = 0; i < segmentedControl.SegmentCount; i++) {
-					var node = new NSObjectResult (ResultObject, i) { ParentNode = this };
-					children.Add (node);
-					if (firstChild == null) {
-						firstChild = node;
-						lastChild = node;
-					} else {
-						lastChild.NextSibling = node;
-						node.PreviousSibling = lastChild;
-						lastChild = node;
-					}
-				}
-			}
-			return base.Children (recursive);
-		}
-
 		public override List<AppResult> NextSiblings ()
 		{
 			return null;
