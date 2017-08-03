@@ -34,6 +34,7 @@ using AppKit;
 using Foundation;
 
 using MonoDevelop.Components.MainToolbar;
+using MonoDevelop.Core;
 
 namespace MonoDevelop.Components.AutoTest.Results
 {
@@ -171,13 +172,28 @@ namespace MonoDevelop.Components.AutoTest.Results
 
 		public override List<AppResult> Children (bool recursive = true)
 		{
+			AppResult firstChild = null, lastChild = null;
 			var children = new List<AppResult> ();
 			children.AddRange (base.Children (recursive));
-			if(ResultObject is NSSegmentedControl)
+			firstChild = children.FirstOrDefault ();
+			lastChild = children.LastOrDefault ();
+
+			if(ResultObject is NSSegmentedControl || ResultObject.GetType ().IsSubclassOf (typeof(NSSegmentedControl)))
 			{
 				var segmentedControl = (NSSegmentedControl)ResultObject;
-				for (int i = 0; i < segmentedControl.SegmentCount; i++)
-					children.Add (new NSObjectResult(ResultObject, i) { ParentNode = this });
+				LoggingService.LogInfo ($"Found NSSegmentedControl with {segmentedControl.SegmentCount} children");
+				for (int i = 0; i < segmentedControl.SegmentCount; i++) {
+					var node = new NSObjectResult (ResultObject, i) { ParentNode = this };
+					children.Add (node);
+					if (firstChild == null) {
+						firstChild = node;
+						lastChild = node;
+					} else {
+						lastChild.NextSibling = node;
+						node.PreviousSibling = lastChild;
+						lastChild = node;
+					}
+				}
 			}
 			return base.Children (recursive);
 		}
