@@ -171,6 +171,13 @@ namespace MonoDevelop.Components.AutoTest.Results
 
 		public override AppResult Property (string propertyName, object value)
 		{
+			if (ResultObject is NSSegmentedControl) {
+				NSSegmentedControl control = (NSSegmentedControl)ResultObject;
+				if (this.index >= 0 && propertyName == "Sensitive" || propertyName == "Visible") {
+					LoggingService.LogInfo ($"Checking if 'Sensitive' or 'Visible' matches with {value}. Found: {control.IsEnabled (this.index)}");
+					return control.IsEnabled (this.index) == (bool)value ? this : null;
+				}
+			}
 			return MatchProperty (propertyName, ResultObject, value);
 		}
 
