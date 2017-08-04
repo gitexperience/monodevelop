@@ -41,9 +41,7 @@ namespace MonoDevelop.Ide.Projects
 	{
 		INewProjectDialogController controller;
 		Menu popupMenu;
-		bool doubleClicked;
-		DateTime lastClickTime;
-		readonly double doubleClickPeriod = Gtk.Settings.Default.DoubleClickTime;
+		bool isLastPressedKeySpace;
 
 		public GtkNewProjectDialogBackend ()
 		{
@@ -61,6 +59,8 @@ namespace MonoDevelop.Ide.Projects
 			templatesTreeView.ButtonPressEvent += TemplatesTreeViewButtonPressed;
 			templatesTreeView.Selection.SelectFunction = TemplatesTreeViewSelection;
 			templatesTreeView.RowActivated += TreeViewRowActivated;
+			templatesTreeView.KeyPressEvent += TemplatesTreeViewKeyPressed;
+
 			cancelButton.Clicked += CancelButtonClicked;
 			nextButton.Clicked += (sender, e) => MoveToNextPage ();
 			previousButton.Clicked += (sender, e) => MoveToPreviousPage ();
@@ -148,9 +148,6 @@ namespace MonoDevelop.Ide.Projects
 		[GLib.ConnectBefore]
 		void TemplatesTreeViewButtonPressed (object o, ButtonPressEventArgs args)
 		{
-			var currentClickTime = DateTime.Now;
-			doubleClicked = doubleClickPeriod > (currentClickTime - lastClickTime).TotalMilliseconds;
-			lastClickTime = currentClickTime;
 
 			SolutionTemplate template = GetSelectedTemplate ();
 			if ((template == null) || (template.AvailableLanguages.Count <= 1)) {
@@ -159,6 +156,22 @@ namespace MonoDevelop.Ide.Projects
 
 			if (languageCellRenderer.IsLanguageButtonPressed (args.Event)) {
 				HandlePopup (template, args.Event.Time);
+			}
+		}
+
+	    [GLib.ConnectBefore]
+		private void TemplatesTreeViewKeyPressed (object o, KeyPressEventArgs args)
+		{
+			isLastPressedKeySpace = args.Event.Key == Gdk.Key.space;
+
+			if (isLastPressedKeySpace) {
+				isLastPressedKeySpace = true;
+				var template = GetSelectedTemplate ();
+
+				if (template == null)
+					return;
+				if (template.AvailableLanguages.Count > 1)
+					HandlePopup (template, 0);
 			}
 		}
 
@@ -590,15 +603,9 @@ namespace MonoDevelop.Ide.Projects
 
 		void TreeViewRowActivated (object o, RowActivatedArgs args)
 		{
-			var template = GetSelectedTemplate ();
-
-			if (template == null)
-				return;
-
-			if ((template.AvailableLanguages.Count <= 1 || doubleClicked  ) && CanMoveToNextPage) 
+			if (CanMoveToNextPage && !isLastPressedKeySpace)
 				MoveToNextPage ();
-			 else 
-				HandlePopup (template, 0);
+			isLastPressedKeySpace = false;
 		}
 
 		bool IsSolutionTemplateOnActivatedRow (TreeView treeView, RowActivatedArgs args)
