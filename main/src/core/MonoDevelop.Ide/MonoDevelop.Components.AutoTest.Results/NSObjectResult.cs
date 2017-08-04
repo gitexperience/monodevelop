@@ -139,7 +139,9 @@ namespace MonoDevelop.Components.AutoTest.Results
 			if(ResultObject is NSSegmentedControl){
 				NSSegmentedControl control = (NSSegmentedControl)ResultObject;
 				string value = control.GetLabel (this.index);
+				LoggingService.LogInfo ($"Matching Text for NSSegmentedControl with found: '{value}' and expected: '{text}' and exactness: '{exact}");
 				if (CheckForText (value, text, exact)) {
+					LoggingService.LogInfo ($"Matched NSSegmentedControl text: {ToString ()}");
 					return this;
 				}
 			}
@@ -191,8 +193,12 @@ namespace MonoDevelop.Components.AutoTest.Results
 		{
 			if (ResultObject is NSSegmentedControl) {
 				var segmentedControl = (NSSegmentedControl)ResultObject;
-				segmentedControl.SelectSegment (this.index);
+				if (this.index >= 0) {
+					LoggingService.LogInfo ($"Clicking on NSSegmentedControl with index: '{this.index}' with Label: '{segmentedControl.GetLabel (this.index)}'");
+					return segmentedControl.SelectSegment (this.index);
+				}
 			}
+
 			NSControl control = ResultObject as NSControl;
 			if (control == null) {
 				return false;
