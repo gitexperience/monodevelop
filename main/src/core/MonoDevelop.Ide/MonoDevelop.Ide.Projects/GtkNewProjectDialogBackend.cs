@@ -41,6 +41,9 @@ namespace MonoDevelop.Ide.Projects
 	{
 		INewProjectDialogController controller;
 		Menu popupMenu;
+		bool doubleClicked;
+		DateTime lastClickTime;
+		const double doubleClickPeriod = 500;
 
 		public GtkNewProjectDialogBackend ()
 		{
@@ -145,6 +148,10 @@ namespace MonoDevelop.Ide.Projects
 		[GLib.ConnectBefore]
 		void TemplatesTreeViewButtonPressed (object o, ButtonPressEventArgs args)
 		{
+			var currentClickTime = DateTime.Now;
+			doubleClicked = doubleClickPeriod > (currentClickTime - lastClickTime).TotalMilliseconds;
+			lastClickTime = currentClickTime;
+
 			SolutionTemplate template = GetSelectedTemplate ();
 			if ((template == null) || (template.AvailableLanguages.Count <= 1)) {
 				return;
@@ -588,7 +595,7 @@ namespace MonoDevelop.Ide.Projects
 			if (template == null)
 				return;
 
-			if ((template.AvailableLanguages.Count <= 1) && CanMoveToNextPage) 
+			if ((template.AvailableLanguages.Count <= 1 || doubleClicked  ) && CanMoveToNextPage) 
 				MoveToNextPage ();
 			 else 
 				HandlePopup (template, 0);
