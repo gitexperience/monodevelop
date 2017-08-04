@@ -41,7 +41,7 @@ namespace MonoDevelop.Components.AutoTest.Results
 	public class NSObjectResult : AppResult
 	{
 		NSObject ResultObject;
-		int index;
+		int index = -1;
 
 		internal NSObjectResult (NSObject resultObject)
 		{
@@ -52,11 +52,13 @@ namespace MonoDevelop.Components.AutoTest.Results
 		{
 			ResultObject = resultObject;
 			this.index = index;
+			LoggingService.LogInfo ("Found segment with label: "+((NSSegmentedControl)ResultObject).GetLabel (index));
 		}
 
 		public override string ToString ()
 		{
-			return string.Format ("NSObject: Type: {0}", ResultObject.GetType ().FullName);
+			var suffix = string.Format ("[{0} - {1}]", index, index > -1 ? ((NSSegmentedControl)ResultObject).GetLabel (index).ToString () : string.Empty);
+			return string.Format ("NSObject: Type: {0}", ResultObject.GetType ().FullName + suffix);
 		}
 
 		public override void ToXml (XmlElement element)
