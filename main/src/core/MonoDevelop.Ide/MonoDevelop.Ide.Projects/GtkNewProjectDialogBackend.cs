@@ -43,7 +43,7 @@ namespace MonoDevelop.Ide.Projects
 		Menu popupMenu;
 		bool doubleClicked;
 		DateTime lastClickTime;
-		const double doubleClickPeriod = 500;
+		readonly double doubleClickPeriod = Gtk.Settings.Default.DoubleClickTime;
 
 		public GtkNewProjectDialogBackend ()
 		{
