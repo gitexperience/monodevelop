@@ -333,8 +333,8 @@ namespace MonoDevelop.Ide.Gui
 		public void CloseContent (ViewContent content)
 		{
 			if (viewContentCollection.Contains(content)) {
-				if (content.Project != null)
-					content.Project.NameChanged -= HandleProjectNameChanged;
+				if (content.Owner != null)
+					content.Owner.NameChanged -= HandleProjectNameChanged;
 				viewContentCollection.Remove(content);
 			}
 		}
@@ -429,8 +429,8 @@ namespace MonoDevelop.Ide.Gui
 			if (mimeimage != null)
 				tab.Icon = mimeimage;
 
-			if (content.Project != null)
-				content.Project.NameChanged += HandleProjectNameChanged;
+			if (content.Owner != null)
+				content.Owner.NameChanged += HandleProjectNameChanged;
 			if (bringToFront)
 				content.WorkbenchWindow.SelectWindow();
 
@@ -546,8 +546,8 @@ namespace MonoDevelop.Ide.Gui
 			if (window.ViewContent.IsDirty) {
 				post = "*";
 			}
-			if (window.ViewContent.Project != null) {
-				return window.ViewContent.Project.Name + " – " + window.ViewContent.PathRelativeToProject + post + " – " + BrandingService.ApplicationLongName;
+			if (window.ViewContent.Owner != null) {
+				return window.ViewContent.Owner.Name + " – " + window.ViewContent.PathRelativeToProject + post + " – " + BrandingService.ApplicationLongName;
 			}
 			return window.ViewContent.ContentName + post + " – " + BrandingService.ApplicationLongName;
 		}
@@ -555,8 +555,8 @@ namespace MonoDevelop.Ide.Gui
 		void SetAccessibilityDetails (IWorkbenchWindow window)
 		{
 			string documentUrl, filename;
-			if (window.ViewContent.Project != null) {
-				documentUrl = "file://" + window.ViewContent.Project.FileName;
+			if (window.ViewContent.Owner != null) {
+				documentUrl = "file://" + window.ViewContent.Owner.FileName;
 				filename = System.IO.Path.GetFileName (window.ViewContent.PathRelativeToProject);
 			} else {
 				documentUrl = string.Empty;

@@ -1090,7 +1090,7 @@ namespace MonoDevelop.SourceEditor
 
 			RemoveMarkerQueue ();
 			widget.Dispose ();
-			this.Project = null;
+			this.Owner = null;
 		}
 
 		bool CheckReadOnly (int line)
@@ -2394,7 +2394,7 @@ namespace MonoDevelop.SourceEditor
 			var formatter = CodeFormatterService.GetFormatter (Document.MimeType);
 			if (formatter == null || !formatter.SupportsCorrectingIndent)
 				return;
-			var policies = Project != null ? Project.Policies : null;
+			var policies = Owner != null ? Owner.Policies : null;
 			var editorData = TextEditor.GetTextEditorData ();
 			if (TextEditor.IsSomethingSelected) {
 				using (var undo = TextEditor.OpenUndoGroup ()) {

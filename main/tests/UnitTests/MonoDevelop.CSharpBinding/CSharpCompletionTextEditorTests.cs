@@ -67,7 +67,7 @@ namespace MonoDevelop.CSharpBinding
 			tww.ViewContent = content;
 			content.ContentName = "/a.cs";
 			content.Data.MimeType = "text/x-csharp";
-			content.Project = project;
+			content.Owner = project;
 
 
 			content.Text = text;
