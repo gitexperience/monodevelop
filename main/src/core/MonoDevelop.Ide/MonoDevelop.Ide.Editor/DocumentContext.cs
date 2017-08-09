@@ -67,6 +67,14 @@ namespace MonoDevelop.Ide.Editor
 			get;
 		}
 
+		/// <summary>
+		/// Gets the SolutionItem this context is in.
+		/// </summary>
+		public SolutionItem Owner {
+			get {
+				return Project as SolutionItem;
+			}
+		}
 
 		/// <summary>
 		/// Determine if the file has already saved on disk. Untitled files are open
