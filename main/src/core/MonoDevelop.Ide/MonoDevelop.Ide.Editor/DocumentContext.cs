@@ -63,17 +63,17 @@ namespace MonoDevelop.Ide.Editor
 		/// <summary>
 		/// Gets the project this context is in.
 		/// </summary>
-		public abstract Project Project {
-			get;
+		public virtual Project Project {
+			get {
+				return Owner as Project;
+			}
 		}
 
 		/// <summary>
 		/// Gets the SolutionItem this context is in.
 		/// </summary>
-		public SolutionItem Owner {
-			get {
-				return Project as SolutionItem;
-			}
+		public abstract SolutionItem Owner {
+			get;
 		}
 
 		/// <summary>
