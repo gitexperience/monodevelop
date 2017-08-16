@@ -46,7 +46,7 @@ namespace MonoDevelop.CSharpBinding
 
 		public void UpdateProject (Project project)
 		{
-			SetProject (project);
+			SetOwner (project);
 		}
 		
 		public IProjectContent HiddenProjectContent;
