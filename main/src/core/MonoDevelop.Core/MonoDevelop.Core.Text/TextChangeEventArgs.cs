@@ -138,7 +138,7 @@ namespace MonoDevelop.Core.Text
 	[Serializable]
 	public class TextChangeEventArgs : EventArgs
 	{
-		public IReadOnlyList<TextChange> TextChanges { get; }
+		public IReadOnlyList<TextChange> TextChanges { get;}
 
 		/// <summary>
 		/// Creates a new TextChangeEventArgs object.
