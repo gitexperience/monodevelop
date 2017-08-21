@@ -1,7 +1,7 @@
 ﻿//
 // TextChangeEventArgs.cs
 //
-// Author:
+// Author: 
 //       Mike Krüger <mkrueger@xamarin.com>
 //
 // Copyright (c) 2014 Xamarin Inc. (http://xamarin.com)
